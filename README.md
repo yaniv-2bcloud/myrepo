@@ -26,27 +26,25 @@ For additional training and support, please see:
  3. [Azure Machine Learning Services](https://azure.microsoft.com/en-us/services/machine-learning/)
 ## Getting Started and Process Overview  
 1. Clone this repository and navigate to the root of the directory  
-2. Go to [Manual Deployment guide](./00_Resource_Deployment/README.md) for the steps you need to take to deploy this solution  
-    - **NOTE**: Automated Deployment Process Coming Soon!  
+2. Go to [Deployment guide](./Resource_Deployment/README.md) for the steps you need to take to deploy this solution  
 
 The architecture diagram below details what you will be building for this Solution Accelerator:
 
-![Microservices Architecture](./Reference/Architecture/Current-Architecture-V1.jpg)
+![Microservices Architecture](./Reference/Architecture/retail_ai_v2_arch.png)
 
-
-### [0 - Resource Deployment](./00_Resource_Deployment)
+### [0 - Resource Deployment](./Resource_Deployment)
 The resources in this folder can be used to deploy the required resources into your Azure Subscription. You can do this in the Azure Portal
 
-### [1- Anaytics Deployment](./01_Application_Deployment)
-This folder contains the Notebooks and SQL Script needed to complete this solution accelerator. Once you have deployed all the required resources from ResourceDeploymnet.md, run through the Notebooks following the instructions in [0. Resource Deployment](./00_Resource_Deployment). 
+### [1- Anaytics Deployment](./Application_Deployment)
+This folder contains the Notebooks needed to complete this solution accelerator. Once you have deployed all the required resources from ResourceDeploymnet.md, run through the Notebooks following the instructions in [Resource Deployment](./Resource_Deployment). 
 
-### [2- Application Front Web Application Deployment](./02_Microsoft_Token_Service)
+### [2- Application Front Web Application Deployment](./Application_Frontend_Deployment)
 This folder contains the resources to deploy the front end web application. 
 
-### [3- Application Backend API Deployment](./02_Microsoft_Token_Service)
+### [3- Application Backend API Deployment](./Application_Backend_Deployment)
 This folder contains the resources for product details and managing the list of products that are presented to the Portal.  
   
-### [4. ML Model Building](./4._ML_Model_Building)
+### [4. ML Model Building](./ML_Model_Building)
 This folder contains the resources for exploring how the model was constructed.
 
 ## Our Live Demo: Check it out!
