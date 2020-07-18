@@ -1,1 +1,0 @@
-## How to use the Model Deployment Scripts to Deploy the Item-Based Recommendation Model

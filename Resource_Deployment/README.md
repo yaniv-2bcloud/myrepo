@@ -169,16 +169,20 @@ Below are paramaters you will use to create the necessary resources for this sol
 2. Open a VS Code at the following filepath of this repository: `1. Analytics Deployment\api-layer\az_func\__app__`  
 3. Edit the `local.settings.json` to fill in the following values:  
     ```
-    {
-        "IsEncrypted": false,
-        "Values": {
-        "FUNCTIONS_WORKER_RUNTIME": "python",
-        "COSMOS_KEY": "", // The Primary Key Associated with your Cosmos DB account
-        "AMLS_SERVICE_KEY": "", // The ML Web Service Key found in the Model Deployment in Azure Machine Learning Service
-        "AzureWebJobsStorage": "", // Found in the Function App that you deployed
-        "SCORING_URL": "" // The Scoring URL for the Web Service, found in Azure Machine Learning Service
+        {
+            "IsEncrypted": false,
+            "Values": {
+                "FUNCTIONS_WORKER_RUNTIME": "python",
+                "COSMOS_DB_ACCOUNT_NAME": "", // Account Name is the name of the actual Cosmos DB resource
+                "COSMOS_DB_DATABASE_NAME": "product_data",
+                "DETAIL_COLLECTION": "product_details",
+                "USER_REC_COLLECTION": "user_recommendations",
+                "COSMOS_KEY": "", // Primary Key found in Azure Portal in the Cosmos DB Resource Blade
+                "AMLS_SERVICE_KEY": "", // Web Service Key Found in Azure Machine Learning Studio under Deployments
+                "AzureWebJobsStorage": "", // Connection String found in Configuration blade of Function App
+                "SCORING_URL": "" // URL of the Scoring Endpoint Found in Azure Machine Learning Studio under Deployments
+            }
         }
-    }
     ```
 4. Go to the Azure Function Extension and publish the function to the Function App deployed in Step 1 of this section.  
 5. Go to the Function App in the Extension menu of VS Code and right click on the `Application Settings` and choose `Upload Local Settings`  
