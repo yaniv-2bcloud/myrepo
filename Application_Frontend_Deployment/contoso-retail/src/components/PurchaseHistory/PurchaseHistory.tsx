@@ -10,7 +10,7 @@ import { Shimmer, ShimmerElementType } from 'office-ui-fabric-react/lib/Shimmer'
 import { IRecommendedProducts, IProductItem } from '../../interfaces/IRecommendedItems';
 import AddToCart from '../../helpers/AddToCart';
 import { ISessionData } from '../../interfaces/ISessionData';
-import { GET_PRODUCT_DETAILS, GET_USER_RECOMMENDATIONS } from '../../config';
+import { getProductDetails, getUserRecommendations } from '../../config';
 
 interface IProps {
   UsesVerticalLayout?: boolean
@@ -68,8 +68,7 @@ class PurchaseHistory extends React.Component<IProps, IState> {
     let updatedData: IProductItem[] = [];
     let userData: ISessionData = JSON.parse(sessionStorage.getItem("ContosoSynapseDemo"));
 
-    const URI = GET_USER_RECOMMENDATIONS + userData.id;
-    const DBURI = GET_PRODUCT_DETAILS;
+    const URI = getUserRecommendations(userData.id);
 
     const _response = await fetch(URI)
       .then(function (response) {
@@ -80,7 +79,7 @@ class PurchaseHistory extends React.Component<IProps, IState> {
         // data here
         for (let i = 0; i < parsedData.items.length; i++) {
           const element = parsedData.items[i];
-          const _response2 = fetch(DBURI + element.productID)
+          const _response2 = fetch(getProductDetails(element.productID))
           .then(function (response) {
             return response.json();
           })
@@ -135,7 +134,7 @@ class PurchaseHistory extends React.Component<IProps, IState> {
                       <div className="price-area">
                         <div className="price">{"$" + item.price.toString().slice(0, -2)}<sup>{item.price.toString().slice(-2)}</sup></div>
                         <div style={{ textAlign: "center", display: "inline-block" }}>
-                          <button type="button" className="add-to-cart-btn" onClick={() => AddToCart(item.productID.toString(), item.name, item.brand, item.description, "https://contosoretailimages.blob.core.windows.net/product/" + item.productCategory + "/" + item.imageURL, item.price.toString(), 1)}>
+                          <button type="button" className="add-to-cart-btn" onClick={() => AddToCart(item.productID.toString(), item.name, item.brand, item.productCategory, "https://contosoretailimages.blob.core.windows.net/product/" + item.productCategory + "/" + item.imageURL, item.price.toString(), 1)}>
                             <Icon iconName="Add" ariaLabel="Add to cart" color="white" />
                           </button>
                         </div>

@@ -10,14 +10,14 @@ import { Shimmer, ShimmerElementType } from 'office-ui-fabric-react/lib/Shimmer'
 import { IRecommendedProducts, IProductItem } from '../../interfaces/IRecommendedItems';
 import AddToCart from '../../helpers/AddToCart';
 import { ISessionData } from '../../interfaces/ISessionData';
-import { GET_USER_RECOMMENDATIONS } from '../../config';
+import { getUserRecommendations } from '../../config';
 
 interface IProps {
   UsesVerticalLayout?: boolean
 }
 
 interface IState {
-  recommendedItems: IRecommendedProducts;
+  recommendedItems: IProductItem[];
   IsLoaded: boolean;
   UserID: string;
   UsesVerticalLayout?: boolean
@@ -32,19 +32,18 @@ class Recommendations extends React.Component<IProps, IState> {
     this.state = {
       IsLoaded: false,
       UserID: userData.id,
-      recommendedItems: {
-        user_id: Number(userData.id),
-        items: [{
-          brand: "",
-          description: "",
-          imageURL: "",
-          price: 0.00,
-          productID: "",
-          name: "",
-          id: "",
-          productCategory: ""
-      }]
-      }
+      recommendedItems: [
+           {
+            brand: "",
+            description: "",
+            imageURL: "",
+            price: 0.00,
+            productID: "",
+            name: "",
+            id: "",
+            productCategory: ""
+           }
+      ]
       
     };
     this.loadRecommendedItems = this.loadRecommendedItems.bind(this);
@@ -67,14 +66,13 @@ class Recommendations extends React.Component<IProps, IState> {
     const that = this;
     let userData: ISessionData = JSON.parse(sessionStorage.getItem("ContosoSynapseDemo"));
 
-    const URI = GET_USER_RECOMMENDATIONS + userData.id;
+    const URI = getUserRecommendations(userData.id);
     
     fetch(URI)
       .then(function (response) {
         return response.json();
       })
-      .then(function (parsedData: IRecommendedProducts) {
-        
+      .then(function (parsedData: IProductItem[]) {
         that.setState({
           recommendedItems: parsedData,
           IsLoaded: true
@@ -92,8 +90,8 @@ class Recommendations extends React.Component<IProps, IState> {
             verticalAlign="start"
             tokens={{ childrenGap: this.props.UsesVerticalLayout ? 20 : 0 }}
             wrap={this.props.UsesVerticalLayout}>
-            {
-    this.state.recommendedItems.items.map((item: IProductItem, index) => (
+           {
+    this.state.recommendedItems.map((item: IProductItem, index) => (
       <Stack.Item 
         grow
         key={index}
@@ -118,7 +116,7 @@ class Recommendations extends React.Component<IProps, IState> {
             <div className="price-area">
               <div className="price">{"$" + item.price.toString().slice(0, -2)}<sup>{item.price.toString().slice(-2)}</sup></div>
               <div style={{ textAlign: "center", display: "inline-block" }}>
-                <button type="button" className="add-to-cart-btn" onClick={() => AddToCart(item.productID, item.name, item.brand, item.description, "https://contosoretailimages.blob.core.windows.net/product/" + item.productCategory + "/" + item.imageURL, item.price.toString(), 1)}>
+                <button type="button" className="add-to-cart-btn" onClick={() => AddToCart(item.productID, item.name, item.brand, item.productCategory, "https://contosoretailimages.blob.core.windows.net/product/" + item.productCategory + "/" + item.imageURL, item.price.toString(), 1)}>
                   <Icon iconName="Add" ariaLabel="Add to cart" color="white" />
                 </button>
               </div>

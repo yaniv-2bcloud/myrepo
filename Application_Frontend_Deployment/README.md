@@ -8,7 +8,7 @@ This is a [TypeScript](https://www.typescriptlang.org/) powered [React.js](https
 Be sure to update the API endpoints to your system.  You can change the endpoints from the `/contoso-retail/src/config.ts` TypeScript file.
 
 ## Demo Site:
-[View Demo](https://nextgenretail.z19.web.core.windows.net/)
+[View Demo](https://synapsefornextgenretail.azurewebsites.net/)
 
 ## Available Scripts
 

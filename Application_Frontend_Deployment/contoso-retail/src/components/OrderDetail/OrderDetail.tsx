@@ -9,7 +9,7 @@ import '../OrderDetail/OrderDetail.scss';
 import { EventSender } from '../EventSender/EventSender';
 import { IProductItem } from '../../interfaces/IRecommendedItems';
 import Recommendations from '../Recommendations/Recommendations';
-import { GET_PRODUCT_DETAILS } from '../../config';
+import { getProductDetails } from '../../config';
 import ItemRecommendations from '../ItemRecommendations/ItemRecommendations';
 
 
@@ -41,7 +41,6 @@ class OrderDetail extends React.Component<{}, {
         this.loadData(props.match.params.id);
 
         this.sendToEventHub = this.sendToEventHub.bind(this);
-        this.sendToEventHub();
     }
     /**
        * Send to Event Hub for tracking.
@@ -50,7 +49,16 @@ class OrderDetail extends React.Component<{}, {
         let key = "ContosoSynapseDemo";
         let storeData = JSON.parse(sessionStorage.getItem(key));
         var eventClient = new EventSender();
-        await eventClient.SendEvent({ "userID": storeData.id, "httpReferer": window.location.href });
+        await eventClient.SendEvent({ 
+            "userID": storeData.id, 
+            "httpReferer": window.location.href,
+            "product_id": this.state._id,
+            "brand": this.state.itemDetails.brand,
+            "price": this.state.itemDetails.price.toString(),
+            "category_id": this.state.itemDetails.productCategory,
+            "category_code": this.state.itemDetails.productCategory,
+            "user_session": null
+        });
     }
     /**
        * Load data for UI.
@@ -58,7 +66,9 @@ class OrderDetail extends React.Component<{}, {
     async loadData(id: string) {
         let resultData;
 
-        const URI = GET_PRODUCT_DETAILS + id;
+        const URI = getProductDetails(id);
+
+        let that = this;
 
         await fetch(URI)
             .then(function (response) {
@@ -67,6 +77,7 @@ class OrderDetail extends React.Component<{}, {
             .then(function (parsedData) {
                 // data here
                 resultData = parsedData;
+                that.sendToEventHub();
             });
 
         this.setState({

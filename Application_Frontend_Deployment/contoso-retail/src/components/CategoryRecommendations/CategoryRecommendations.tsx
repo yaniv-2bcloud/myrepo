@@ -108,7 +108,7 @@ class CategoryRecommendations extends React.Component<IProps, IState> {
                       <div className="price-area">
                         <div className="price">{"$" + item.price.toString().slice(0, -2)}<sup>{item.price.toString().slice(-2)}</sup></div>
                         <div style={{ textAlign: "center", display: "inline-block" }}>
-                          <button type="button" className="add-to-cart-btn" onClick={() => AddToCart(item.productID, item.name, item.brand, item.description, "https://contosoretailimages.blob.core.windows.net/product/" + item.productCategory + "/" + item.imageURL, item.price.toString(), 1)}>
+                          <button type="button" className="add-to-cart-btn" onClick={() => AddToCart(item.productID, item.name, item.brand, item.productCategory, "https://contosoretailimages.blob.core.windows.net/product/" + item.productCategory + "/" + item.imageURL, item.price.toString(), 1)}>
                             <Icon iconName="Add" ariaLabel="Add to cart" color="white" />
                           </button>
                         </div>

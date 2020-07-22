@@ -81,7 +81,7 @@ class OrderItAgain extends React.Component<IProps, IState> {
                       <div className="price-area">
                         <div className="price">{"$" + item.price.slice(0, -2)}<sup>{item.price.slice(-2)}</sup></div>
                         <div style={{ textAlign: "center", display: "inline-block" }}>
-                          <button type="button" className="add-to-cart-btn" onClick={() => AddToCart(item.id.toString(), item.name, item.brand, item.description, item.image_src, item.price, 1)}>
+                          <button type="button" className="add-to-cart-btn" onClick={() => AddToCart(item.id.toString(), item.name, item.brand, item.category, item.image_src, item.price, 1)}>
                             <Icon iconName="Add" ariaLabel="Add to cart" color="white" />
                           </button>
                         </div>

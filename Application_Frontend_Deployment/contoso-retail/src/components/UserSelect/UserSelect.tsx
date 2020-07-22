@@ -5,6 +5,7 @@ import * as React from 'react';
 import { Persona, PersonaSize, PersonaPresence } from 'office-ui-fabric-react/lib/Persona';
 import '../UserSelect/UserSelect.scss';
 import { EventSender } from '../EventSender/EventSender';
+import { GET_USER_PROFILES } from '../../config';
 
 interface IData {
     id?: string;
@@ -29,7 +30,7 @@ class UserSelect extends React.Component<{}, {
     }
 
     componentDidMount() {
-        fetch('https://contosoretail.azurefd.net/profile/ContosoRetail/Users')
+        fetch(GET_USER_PROFILES)
             .then(response => response.json())
             .then(data => this.setState({ personaData: data }));
     }
@@ -38,7 +39,17 @@ class UserSelect extends React.Component<{}, {
         let confirm = window.confirm("Are you sure you want to switch users?  This will wipe your order and cart history.");
 
         var eventClient = new EventSender();
-        await eventClient.SendEvent({ "userID": _id, "httpReferer": window.location.href });
+        
+        await eventClient.SendEvent({ 
+            "userID": _id, 
+            "httpReferer": window.location.href,
+            "product_id": null,
+            "brand": null,
+            "price": null,
+            "category_id": null,
+            "category_code": null,
+            "user_session": null
+        });
 
         if (confirm) {
             const key = "ContosoSynapseDemo";

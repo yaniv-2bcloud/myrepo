@@ -5,6 +5,7 @@ import * as React from 'react';
 import { PrimaryButton, Stack, Label, Text, DefaultButton, Link, TextField, ColorPicker, IColor, Icon, isMac, Toggle, LinkBase, Tooltip, TooltipHost } from '@fluentui/react';
 import '../SiteTheme/SiteTheme.scss';
 import ISiteTheme from '../../interfaces/ISiteTheme';
+import { EventSender } from '../EventSender/EventSender';
 
 const viewStyles = {
     padding: "20px 20px",
@@ -28,6 +29,26 @@ class SiteTheme extends React.Component<{}, ISiteTheme> {
         this.changeTitleColor = this.changeTitleColor.bind(this);
         this.changeAppBarColor = this.changeAppBarColor.bind(this);
         this.resetForm = this.resetForm.bind(this);
+
+        this.sendToEventHub = this.sendToEventHub.bind(this);
+        this.sendToEventHub();
+    }
+
+    private async sendToEventHub() {
+        let key = "ContosoSynapseDemo";
+        let storeData = JSON.parse(sessionStorage.getItem(key));
+        var eventClient = new EventSender();
+        
+        await eventClient.SendEvent({ 
+            "userID": storeData.id, 
+            "httpReferer": window.location.href,
+            "product_id": null,
+            "brand": null,
+            "price": null,
+            "category_id": null,
+            "category_code": null,
+            "user_session": null
+        });
     }
 
     private submitTheme(event: React.FormEvent<HTMLFormElement>) {

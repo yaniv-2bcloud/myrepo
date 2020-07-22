@@ -31,7 +31,16 @@ function AddToCart(id: string, name: string, brand: string, description: string,
     let userData: ISessionData = JSON.parse(sessionStorage.getItem("ContosoSynapseDemo"));
 
     var eventClient = new EventSender();
-    eventClient.SendEvent({ "userID": userData.id, "httpReferer": window.location.href });
+    eventClient.SendEvent({ 
+        "userID": userData.id, 
+        "httpReferer": window.location.href,
+        "product_id": id,
+        "brand": brand,
+        "price": price,
+        "category_id": description,
+        "category_code": description,
+        "user_session": null
+    });
 }
 
 export default AddToCart;

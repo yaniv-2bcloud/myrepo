@@ -4,6 +4,7 @@
 import * as React from 'react';
 import Recommendations from '../Recommendations/Recommendations';
 import { EventSender } from '../EventSender/EventSender';
+import '../BI/BI.css';
 
 const h1Styles: React.CSSProperties = {
     font: "normal 20px/48px 'Segoe UI', Arial, Helvetica, sans-serif",
@@ -11,7 +12,7 @@ const h1Styles: React.CSSProperties = {
     color: "#16181A"
 }
 
-class RecommendedForYou extends React.Component<{}, {}> {
+class BI extends React.Component<{}, {}> {
 
     constructor(props: any) {
         super(props);
@@ -38,11 +39,13 @@ class RecommendedForYou extends React.Component<{}, {}> {
     render() {
         return(
             <div className="stack-wrapper hero">
-             <h1 style={h1Styles}>Recommended For You</h1> 
-            <Recommendations />
+             <h1 style={h1Styles}>Marketplace BI</h1> 
+             <div className="container">
+                <iframe className="responsive-iframe" src="https://msit.powerbi.com/view?r=eyJrIjoiMTAzZmE4ZGUtNzM5Ni00MTQ2LTkyZDMtNjRlOWQ3ZjE3MjEyIiwidCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsImMiOjV9" frameBorder="0" allowFullScreen={true}></iframe>
+             </div>
           </div>
         )
     }
 }
 
-export default RecommendedForYou;
+export default BI;

@@ -10,24 +10,13 @@ import { IProductDetails, IProductDetailsAPI } from '../../interfaces/IProductDe
 import AddToCart from '../../helpers/AddToCart';
 import { EventSender } from '../EventSender/EventSender';
 import Recommendations from '../Recommendations/Recommendations';
-import { GET_PRODUCT_DETAILS } from '../../config';
+import { getProductDetails } from '../../config';
 import ItemRecommendations from '../ItemRecommendations/ItemRecommendations';
 
 class ProductDetail extends React.Component<{}, {
     _id?: string,
-    _productData: IProductDetailsAPI
+    _productData: IProductDetails
 }>  {
-
-    private Details: IProductDetails = {
-        id: "",
-        brand: "",
-        productCategory: "",
-        productID: "",
-        imageURL: "",
-        price: 0.00,
-        name: "",
-        description: "",
-    }
 
     constructor(props: any) {
         super(props);
@@ -36,37 +25,43 @@ class ProductDetail extends React.Component<{}, {
             this.state = {
                 _id: props.match.params.id,
                 _productData: {
-                    items: [{
-                        id: "",
-                        brand: "",
-                        productCategory: "",
-                        productID: "",
-                        imageURL: "",
-                        price: 0.00,
-                        name: "",
-                        description: ""
-                    }]
+                    id: "",
+                    brand: "",
+                    productCategory: "",
+                    productID: "",
+                    imageURL: "",
+                    price: 0.00,
+                    name: "",
+                    description: ""
                 }
             };
 
-            this.Details.productID = props.match.params.id;
             this.loadData(props.match.params.id);
 
         }
 
         this.sendToEventHub = this.sendToEventHub.bind(this);
-        this.sendToEventHub();
     }
 
     private async sendToEventHub() {
         let key = "ContosoSynapseDemo";
         let storeData = JSON.parse(sessionStorage.getItem(key));
         var eventClient = new EventSender();
-        await eventClient.SendEvent({ "userID": storeData.id, "httpReferer": window.location.href });
+        
+        await eventClient.SendEvent({ 
+            "userID": storeData.id, 
+            "httpReferer": window.location.href,
+            "product_id": this.state._id,
+            "brand": this.state._productData.brand,
+            "price": this.state._productData.price.toString(),
+            "category_id": this.state._productData.productCategory,
+            "category_code": this.state._productData.productCategory,
+            "user_session": null
+        });
     }
 
     async loadData(id: string) {
-        const URI = GET_PRODUCT_DETAILS + id;
+        const URI = getProductDetails(id);
         let _data;
         await fetch(URI)
             .then(function (response) {
@@ -76,9 +71,10 @@ class ProductDetail extends React.Component<{}, {
                 // data here
                 _data = parsedData;
             });
-        this.Details = _data;
 
         this.setState({ _productData: _data });
+        
+        this.sendToEventHub();
     }
 
     goBack() {
@@ -96,30 +92,30 @@ class ProductDetail extends React.Component<{}, {
                     className="detailImage"
                     imageFit={ImageFit.centerCover}
                     height="250px"
-                    src={"https://contosoretailimages.blob.core.windows.net/product/" + this.Details.productCategory + "/" + this.Details.imageURL}
-                    alt={this.Details.name}
+                    src={"https://contosoretailimages.blob.core.windows.net/product/" + this.state._productData.productCategory + "/" + this.state._productData.imageURL}
+                    alt={this.state._productData.name}
                 />
                 <div className="product-details">
                     <div className="title-area">
                         <h2 className="product-name">
-                            {this.Details.name}
+                            {this.state._productData.name}
                         </h2>
                         <div className="brand-name">
-                            By {this.Details.brand}
+                            By {this.state._productData.brand}
                         </div>
                     </div>
                     <h3>What's in the box</h3>
                     <div className="product-description">
-
+                        {this.state._productData.productCategory}
                     </div>
                     <div className="price-area">
                         <div id="priceDetail">
                             <div>
-                                <div className="price">{"$" + this.Details.price.toString().slice(0, -2)}<sup>{this.Details.price.toString().slice(-2)}</sup></div>
+                                <div className="price">{"$" + this.state._productData.price.toString().slice(0, -2)}<sup>{this.state._productData.price.toString().slice(-2)}</sup></div>
                             </div>
                             <div>
                                 <Button
-                                    onClick={() => AddToCart(this.Details.productID, this.Details.name, this.Details.brand, this.Details.description, "https://contosoretailimages.blob.core.windows.net/product/" + this.Details.productCategory + "/" + this.Details.imageURL, this.Details.price.toString(), 1)}
+                                    onClick={() => AddToCart(this.state._productData.productID, this.state._productData.name, this.state._productData.brand, this.state._productData.productCategory, "https://contosoretailimages.blob.core.windows.net/product/" + this.state._productData.productCategory + "/" + this.state._productData.imageURL, this.state._productData.price.toString(), 1)}
                                     primary
                                     iconProps={{ iconName: "Add" }}
                                     text="Add"

@@ -73,8 +73,19 @@ class ShoppingCart extends React.Component<{}, {
 
         sessionStorage.setItem("ContosoSynapseDemo", JSON.stringify(userData));
 
+        let key = "ContosoSynapseDemo";
+        let storeData = JSON.parse(sessionStorage.getItem(key));
         var eventClient = new EventSender();
-        await eventClient.SendEvent({ "userID": userData.id, "httpReferer": window.location.href });
+        await eventClient.SendEvent({ 
+            "userID": storeData.id, 
+            "httpReferer": window.location.href,
+            "product_id": this.state.cartData.cart[0].id,
+            "brand": this.state.cartData.cart[0].brand,
+            "price": this.state.cartData.cart[0].price,
+            "category_id": this.state.cartData.cart[0].category,
+            "category_code": this.state.cartData.cart[0].category,
+            "user_session": null
+        });
 
         window.alert("Order Submitted");
 

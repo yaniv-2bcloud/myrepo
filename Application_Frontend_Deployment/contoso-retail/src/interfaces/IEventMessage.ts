@@ -6,5 +6,11 @@ export interface IEventMessage extends IMessage {
 }
 
 interface IMessage {
-    httpReferer : string
+    httpReferer : string,
+    product_id?: string,
+    category_id?: string,
+    category_code?: string,
+    brand?: string,
+    price?: string,
+    user_session?: string
 }

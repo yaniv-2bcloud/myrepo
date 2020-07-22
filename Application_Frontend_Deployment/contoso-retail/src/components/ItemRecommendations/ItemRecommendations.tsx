@@ -11,7 +11,7 @@ import AddToCart from '../../helpers/AddToCart';
 import { ISessionData } from '../../interfaces/ISessionData';
 import { IProductDetails } from '../../interfaces/IProductDetails';
 import { IRelatedProductsAPI, IRelatedProductItem } from '../../interfaces/IRelatedProducts';
-import { GET_ITEM_RECOMMENDATIONS } from '../../config';
+import { getItemRecommendations } from '../../config';
 import Recommendations from '../Recommendations/Recommendations';
 import '../ItemRecommendations/ItemRecommendations.css';
 
@@ -21,7 +21,7 @@ interface IProps {
 }
 
 interface IState {
-  recommendedItems: IRelatedProductItem[];
+  recommendedItems: IProductItem[];
   user_id: number;
   IsLoaded: boolean;
   UsesVerticalLayout?: boolean,
@@ -42,7 +42,7 @@ class ItemRecommendations extends React.Component<IProps, IState> {
       recommendedItems: [{
         brand: "",
         imageURL: "",
-        price: "",
+        price: 0.00,
         productID: "",
         name: "",
         description: "",
@@ -64,16 +64,15 @@ class ItemRecommendations extends React.Component<IProps, IState> {
     let that = this;
 
     //get recoomendation
-    const URI = GET_ITEM_RECOMMENDATIONS + this.state.ProductId;
+    const URI = getItemRecommendations(this.state.ProductId);
     const _response = await fetch(URI)
       .then(function (response) {
         return response.json();
       })
-      .then(function (parsedData: IRelatedProductsAPI) {
+      .then(function (parsedData: IProductItem[]) {
         // data here
-        _rItems = parsedData;
         that.setState({
-          recommendedItems: parsedData.related_products,
+          recommendedItems: parsedData,
           IsLoaded: true
         })
       });
@@ -89,51 +88,50 @@ class ItemRecommendations extends React.Component<IProps, IState> {
       return (
         <div className={this.props.UsesVerticalLayout ? "stack-wrapper item-recommendations stack-vertical" : "stack-wrapper item-recommendations"}>
           {
-            this.state.recommendedItems.length === 0 ?
-            <Recommendations /> :
-            <Stack horizontal={!this.props.UsesVerticalLayout}
-            horizontalAlign="start"
-            verticalAlign="start"
-            tokens={{ childrenGap: this.props.UsesVerticalLayout ? 20 : 0 }}
-            wrap={this.props.UsesVerticalLayout}>
-            {
-              this.state.recommendedItems.map((item: IRelatedProductItem, index) =>
-                <Stack.Item
-                  grow
-                  key={index}
-                  className={"product_" + item.productID}>
-                  <div className="product-panel"
-                  >
-                    <a href={"/ProductDetail/" + item.productID}>
-                      <Image
-                        style={{ borderTopLeftRadius: "5pt", borderTopRightRadius: "5pt" }}
-                        imageFit={ImageFit.cover}
-                        alt={item.name}
-                        src={"https://contosoretailimages.blob.core.windows.net/product/" + item.productCategory + "/" + item.imageURL}
-                      />
-                    </a>
-                    <div className="product-details">
-                      <div className="product-name" title={item.name}>
-                        {item.name}
-                      </div>
-                      <div className="brand-name" title={"By " + item.brand}>
-                        By {item.brand}
-                      </div>
-                      <div className="price-area">
-                        <div className="price">{"$" + item.price.toString().slice(0, -2)}<sup>{item.price.toString().slice(-2)}</sup></div>
-                        <div style={{ textAlign: "center", display: "inline-block" }}>
-                          <button type="button" className="add-to-cart-btn" onClick={() => AddToCart(item.productID, item.name, item.brand, item.brand, "https://contosoretailimages.blob.core.windows.net/product/" + item.productCategory + "/" + item.imageURL, item.price, 1)}>
-                            <Icon iconName="Add" ariaLabel="Add to cart" color="white" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Stack.Item>
-              )}
-          </Stack>
-          }
-          
+    this.state.recommendedItems.length === 0 ?
+    <Recommendations /> :
+    <Stack horizontal={!this.props.UsesVerticalLayout}
+    horizontalAlign="start"
+    verticalAlign="start"
+    tokens={{ childrenGap: this.props.UsesVerticalLayout ? 20 : 0 }}
+    wrap={this.props.UsesVerticalLayout}>
+    {
+      this.state.recommendedItems.map((item: IProductItem, index) =>
+        <Stack.Item
+          grow
+          key={index}
+          className={"product_" + item.productID}>
+          <div className="product-panel"
+          >
+            <a href={"/ProductDetail/" + item.productID}>
+              <Image
+                style={{ borderTopLeftRadius: "5pt", borderTopRightRadius: "5pt" }}
+                imageFit={ImageFit.cover}
+                alt={item.name}
+                src={"https://contosoretailimages.blob.core.windows.net/product/" + item.productCategory + "/" + item.imageURL}
+              />
+            </a>
+            <div className="product-details">
+              <div className="product-name" title={item.name}>
+                {item.name}
+              </div>
+              <div className="brand-name" title={"By " + item.brand}>
+                By {item.brand}
+              </div>
+              <div className="price-area">
+                <div className="price">{"$" + item.price.toString().slice(0, -2)}<sup>{item.price.toString().slice(-2)}</sup></div>
+                <div style={{ textAlign: "center", display: "inline-block" }}>
+                  <button type="button" className="add-to-cart-btn" onClick={() => AddToCart(item.productID, item.name, item.brand, item.brand, "https://contosoretailimages.blob.core.windows.net/product/" + item.productCategory + "/" + item.imageURL, item.price.toString(), 1)}>
+                    <Icon iconName="Add" ariaLabel="Add to cart" color="white" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Stack.Item>
+      )}
+  </Stack>
+  }
         </div>
       );
     } else {

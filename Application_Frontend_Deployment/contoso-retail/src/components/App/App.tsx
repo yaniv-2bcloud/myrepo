@@ -29,6 +29,7 @@ import UpdateCartCount from '../../helpers/UpdateCartCount';
 import ItemRecommendations from '../ItemRecommendations/ItemRecommendations';
 import SiteTheme from '../SiteTheme/SiteTheme';
 import UpdateTheme from '../../helpers/UpdateTheme';
+import BI from '../BI/BI';
 
 interface IProps {
 }
@@ -157,6 +158,7 @@ class App extends React.Component<IProps, IState> {
               <Route path="/OrderDetail/:id" component={OrderDetail} />
               <Route path="/RecommendedForYou" component={()=> <Recommendations UsesVerticalLayout={true} />} />
               <Route path="/SiteTheme" component={SiteTheme} />
+              <Route path="/BI" component={BI} />
               <Route path='*' component={NotFound} />
             </Switch>
           </main>
@@ -201,13 +203,19 @@ class App extends React.Component<IProps, IState> {
           <Stack id="demopanel" tokens={{ childrenGap: 30 }}>
             <a href="/" onClick={() => this.resetSessionStorage()}>
               <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 6 }}>
-                <Icon iconName="RevToggleKey" ariaLabel="Reset Demo Icon" style={{ fontSize: "20px" }} />
+                <Icon iconName="RevToggleKey" aria-label="Reset Demo Icon" style={{ fontSize: "20px" }} />
                 <Text nowrap block variant={'large'}>Reset Demo</Text>
+              </Stack>
+            </a>
+            <a href="/BI">
+              <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 6 }}>
+                <Icon iconName="PowerBILogo" aria-label="Power BI Icon" style={{ fontSize: "20px" }} />
+                <Text nowrap block variant={'large'}>Marketplace BI</Text>
               </Stack>
             </a>
             <a href="/SiteTheme">
               <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 6 }}>
-                <Icon iconName="Color" ariaLabel="Theme Icon" style={{ fontSize: "20px" }} />
+                <Icon iconName="Color" aria-label="Theme Icon" style={{ fontSize: "20px" }} />
                 <Text nowrap block variant={'large'}>Configure Theme</Text>
               </Stack>
             </a>
