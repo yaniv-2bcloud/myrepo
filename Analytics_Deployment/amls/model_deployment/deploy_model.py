@@ -8,8 +8,7 @@ from azureml.core.environment import Environment
 from azureml.core import Workspace
 from azureml.core.model import Model, InferenceConfig
 
-from model_deployment.utility_functions.env_setup import *
-from model_deployment.deployment_func.amls_deployment_func import *
+from deployment_func.amls_deployment_func import *
 
 SUBSCRIPTION_ID=""
 RESOURCE_GROUP=""
@@ -40,13 +39,12 @@ def main ():
       myenv.name = "myenv"
       conda_dep = CondaDependencies()
       conda_dep.add_pip_package("azureml-defaults")
-      conda_dep.add_pip_package("azure-storage")
       conda_dep.add_pip_package("azure-storage-file-datalake")
       myenv.python.conda_dependencies = conda_dep
       print("Environment Configured")
       inference_config = InferenceConfig(entry_script='score.py', environment=myenv)
 
-      aks_target_name = "raiaks"
+      aks_target_name = AKS_CLUSTER_NAME
 
       try:
             aks_target = AksCompute(ws,aks_target_name)

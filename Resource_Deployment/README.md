@@ -11,7 +11,8 @@ We are using the data provided by [this Kaggle Open Dataset](https://www.kaggle.
 
 
 ## Step 2: Create Azure Synapse Analytics (workspace preview)
-In this step you will deploy an Azure Synapse Analytics (workspace preview), a SQL Pool and a Spark Pool in the Azure Synapse Analytics (workspace preview) and an Azure Data Lake (Gen2) Storage Account into your Azure Subscription that you are using for this solution accelerator. 
+In this step you will deploy an Azure Synapse Analytics (workspace preview), a SQL Pool, and a Spark Pool in the Azure Synapse Analytics (workspace preview), an Azure Data Lake (Gen2) Storage Account and a Cosmos DB Account into your Azure Subscription that you are using for this solution accelerator. 
+
 
 **Parameters**
 
@@ -28,19 +29,37 @@ Below are paramaters you will use to create the necessary resources for this sol
 
 **Note:** You will be installing the Azure CLI extension for Azure Synapse 
 1. Open Powershell as Administrator  
-2. Navigate to this folder `0. Resource Deployment\deployment\backend\`  
+2. Navigate to this folder `Resource Deployment\deployment\backend\`  
 3. Run the following command: 
     `./deployment_script.ps1`
+
+### Step 2.1: Storage Account Permisions 
+In order to read files from your Azure Storage Account from the Azure Synapse Workspace, you will need to grant `Storage Blob Data Contributor`. Follow the steps below to assign Storage Blob Data Contributor to the users. 
+1. Go to the Azure Data Lake Storage Account created in Step 2
+2. Go to the `Access Control (IAM)` 
+3. Click "+ Add"
+4. Click "Add role assignment" 
+5. Now click the Role dropdown and select `Storage Blob Data Contributor` and search for your username and the other user's usernames to be added by using the search bar. 
+6. Click "Save" at the bottom 
+
+### Step 2.2: Upload Additional Dataset 
+We use the `product_details.json` to enhance the products served to the front-end with image information and cleaned up names.  
+
+1. Upload this JSON to the Azure Data Lake Storage Account attached to your Synapse Studio  
+    - Make sure you put it into the filesystem that is the Primary Filesystem for the Synapse Studio  
+    - Put it in the folder `synapse/workspaces` in the filesystem that is the primary filesystem for the Synapse Studio
+2. Import `Analytics Deployment\synapse-studio\notebooks\CreateOrUpdateProductDetails.ipynb` to the Synapse Studio and fill out the parameters for the filesystem name and the account name  
+3. Execute the Notebook  
 
 ## Step 3: Upload Assets and Data to the Synapse Workspace  
 1. Launch the Synapse Studio:  
     - Go to the resource page in the portal and click the "Launch Synapse Studio"
 2. Go to "Develop", click the "+", and click Import:  
-    - In the demo's repository, go to `1. Analytics Deployment\synapse-studio\notebooks` to select all of the the Spark Notebooks  
+    - In the demo's repository, go to `Analytics Deployment\synapse-studio\notebooks` to select all of the the Spark Notebooks  
 3. Click Publish and confirm the assets to be published  
 4. Go to the "Manage" tab in the Studio and click on the Apache Spark pools  
 5. Click on the Spark Pool that you deployed and click "Packages, then click "Upload environment config file"  
-    - Go to `1. Analytics Deployment\synapse-studio\cluster_config` to get the requirements.txt for upload  
+    - Go to `Analytics Deployment\synapse-studio\cluster_config` to get the requirements.txt for upload  
 6. Ensure that you give yourself and any other user admin privilages for this accelerator by going to the `Manage` tab, then `Access control` underneath `Security` and click "+ Add"
     - ![Manage, Access Control](./imgs/manage_access_control.png)  
 7. Now click the Role dropdown and select all three roles, and search for your username and the other user's usernames to be added by using the search bar underneath the Role dropdown  
@@ -52,14 +71,17 @@ Below are paramaters you will use to create the necessary resources for this sol
 ## Step 4: Setting Up the Cosmos DB and Azure Synapse Link  
 ### Create Containers for Recommendations and Product Details  
 1. Go to the Cosmos DB service that was created in Step 2  
-2. Follow the directions [here](https://docs.microsoft.com/en-us/azure/synapse-analytics/synapse-link/how-to-connect-synapse-link-cosmos-db#connect-an-azure-cosmos-db-database-to-a-synapse-workspace) to link your Cosmos DB to your Azure Synapse Analytics Workspace  
-    - **NOTE**: Make sure to create a Linked Service in Synapse for the Cosmos DB connection and name it `retail_ai_cosmos_synapse_link`  
+
 2. Go to the Data Explorer and create a database named `product_data` with the configurations below  
-    - ![Add Database](./imgs/cdb_database.png)  
+    - ![Add Database](./imgs/cdb_database.png)
+
 3. Underneath the database, create two containers with the following configurations  
     - ![Add Container for Product Details](./imgs/cdb_prod_detail.png)  
-    - ![Add Container for User Recommendations](./imgs/cdb_user_recs.png)  
-  
+    - ![Add Container for User Recommendations](./imgs/cdb_user_recs.png) 
+
+4. Follow the directions [here](https://docs.microsoft.com/en-us/azure/synapse-analytics/synapse-link/how-to-connect-synapse-link-cosmos-db#connect-an-azure-cosmos-db-database-to-a-synapse-workspace) to link your Cosmos DB to your Azure Synapse Analytics Workspace  
+    - **NOTE**: Make sure to create a Linked Service in Synapse for the Cosmos DB connection and name it `retail_ai_cosmos_synapse_link`  
+
 ## Step 5: Running of the Notebooks and SQL Scripts  
 1. Go to the Azure Portal and deploy a Azure Machine Learning Services resource into the resource group that you are using for this Solution Accelerator.  
     - You can search for `Machine Learning` after clicking on `Create a resource` to get the correct resource.  
@@ -69,51 +91,61 @@ Below are paramaters you will use to create the necessary resources for this sol
         - Azure Application Insights  
         - Azure Container Registry (**ATTENTION**: The name of this service will be needed in the deployment of the Azure Kubernetes Service)  
             - You can find the name of the associated Container Registry in the resource page of the deployed Azure Machine Learning Service  
-2. Configure / Fill out the Parameters and then Run the following notebooks and scripts in order:  
+
+2. Now you will need to create a Service Principal and give Contributor access to the Azure Machine Learning Service. Run the following commands in the Powershell: 
+- **Note**:Save the client-id and password of this Service Principal for future steps in the [Notebook](./Analytics_Deployment/synapse-studio/notebooks/03_ALS_Model_Training.ipynb). This will install the Azure Machine Learning CLI Extention. 
+
+
+```sh 
+#After running the script, it will propt you to login to the portal or enter a device code. 
+az login
+
+#Install the Azure Machine Learning CLI Extention 
+az extension add -n azure-cli-ml
+
+# Set the subscription you will be using for this solution accelerator
+# NOTE: you will need to replace the following 
+# - <subscription-id>
+az account set --subscription <subsciption-id>
+
+# Create a Service Principal
+# NOTE: you will need to replace the following 
+# - <service-principal-name>: Desired name for the serive principal
+az ad sp create-for-rbac --sdk-auth --name <service-principal-name>
+
+# Get details of your service principal 
+# NOTE: you will need to replace the following
+# - <client-id>: the client id from the previous step
+az ad sp show --id <client-id> 
+
+# Assign contributor role to the Azure Machine Learning Service 
+# NOTE: you will need to replace the following
+# - <workspace-name>: Azure Machine learning workspace name
+# - <resource-group>: name of the resource group used for this solution accelerator 
+# - <object-id>: the object id of the service principal 
+az ml workspace share -w <workspace-name> -g <resource-group> --user <object-id> --role contributor
+```
+
+3. Configure / Fill out the Parameters and then Run the following notebooks and scripts in order:  
     1. `01_CreateOrUpdateProductDetails`  
     2. `02_Clean_Training_Data`  
     3. `03_ALS_Model_Training`  
     4. `04_RecommendationRefresh`  
-3. After all of these have been run successfully, the recommendations will have been generated for the User-Based Recommendations, and the model will be ready for deployment for the Item-Based Recommender served on Azure Kubernetes Service.  
+4. After all of these have been run successfully, the recommendations will have been generated for the User-Based Recommendations, and the model will be ready for deployment for the Item-Based Recommender served on Azure Kubernetes Service.  
   
 ## Step 6: Set Up the Item-Based Recommendation Web Service  
-> In this section we will set up the Item-Based Recommendation Web Service by using Azure Machine Learning Service to package and deploy the model and Azure Kubernetes Service to host the model.  
-### Deploy the resources  
-> You will need the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) for this part, install it [from here](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest).  
-> You will also need Python 3.7+ installed on your local mahcine.  
-1. Go to the Azure Portal and deploy a Azure Machine Learning Services resource into the resource group that you are using for this Solution Accelerator.  
-    - You can search for `Machine Learning` after clicking on `Create a resource` to get the correct resource.  
-    - **NOTE**: Along with the service comes the following:  
-        - Azure Key Vault  
-        - Azure Storage  
-        - Azure Application Insights  
-        - Azure Container Registry (**ATTENTION**: The name of this service will be needed in the deployment of the Azure Kubernetes Service)  
-            - You can find the name of the associated Container Registry in the resource page of the deployed Azure Machine Learning Service  
-2. **After the Azure Machine Learning Service is deployed,** Use the Azure CLI steps below to deploy the Azure Kubernetes Service  
-    ```sh
-    # After running this, it will prompt you to login to the portal or enter in a device code
-    az login  
-      
-    # Set the subscription context, you will need the subscription ID which can be found in the resource page for the resource group that you are using for this Solution Accelerator  
-    az account set --subscription <enter-subscription-id>  
-      
-    # Now run the following to deploy the Azure Kubernetes Cluster  
-    # NOTE: You will need to replace the following:  
-        # - <insert-resource-group-name>: Name of the resource group you are using for this Solution Accelerator  
-        # - <insert-desired-cluster-name>: Desired name for the AKS cluster  
-        # - <insert-name-of-acr>: Name of the Azure Container Resitry that was deployed along with the Azure Machine Learning Service in the previous step  
-    az aks create --resource-group <insert-resource-group-name> --name <insert-desired-cluster-name> --node-count 3 --enable-addons monitoring --generate-ssh-keys --attach-acr <insert-name-of-acr>  
-      
-    # Now you will need to create a Service Principal and give it Contributor access to your Azure Machine Learning Service  
-    # Enter in your subscription ID, resource group name and the name of your Azure Machine Learning Service  
-    az ad sp create-for-rbac -n "sp_synapse_accelerator" --role contributor
-    --scopes /subscriptions/{subscription-id}/resourceGroups/{resource-group-name}/providers/Microsoft.MachineLearningServices/workspaces/{amls-name}  
-    ```  
-    - **NOTE**: Save the details of this Service Principal for future steps  
-      
-3. In the repository on your local machine, open `1. Analytics Deployment\amls\model_deployment\` in an IDE like VS Code  
-4. Run `pip install -r requirements.txt`  
-5. Edit the `download_model.py` file:  
+> In this section we will set up the Item-Based Recommendation Web Service by using Azure Machine Learning Service to package and deploy the model and Azure Kubernetes Service to host the model. 
+
+> You will need Python 3.7+ installed on your local mahcine.  
+ 
+1. Launch the Azure Machine Learning Studio: 
+    - Go to the resource page in the portal and click the "Launch Studio" 
+3. Go to "Compute", click "Inference Clusters" and click "+ New": 
+    - fill in the Compute Name, Region, choose the Dev-test or Production for the cluster purpose and select Create
+
+4. In the repository on your local machine, open `Analytics Deployment\amls\model_deployment\` in an IDE like VS Code  
+5. Run `pip install -r requirements.txt`  
+6. Edit the `download_model.py` file:  
     -  In the file `download_model.py`, edit the following:  
         ```python
         # Enter the name of the Azure Data Lake Storage Gen2 Account
@@ -125,7 +157,7 @@ Below are paramaters you will use to create the necessary resources for this sol
         ```  
     - Now run `python download_model.py`  
         - This should create a ZIP of the model on your local machine.  
-6. Before deploying the model, edit the `score.py` file and the `deploy_model.py` file.  
+7. Before deploying the model, edit the `score.py` file and the `deploy_model.py` file.  
     - `score.py` at the top of the file in the `init()` function:   
         ```python
         def init():
@@ -155,7 +187,7 @@ Below are paramaters you will use to create the necessary resources for this sol
         # Name of the Azure Kubernetes Service that you deployed
         AKS_CLUSTER_NAME=""
         ```  
-7. Now run `python deploy_model.py` and the model will be registered with AMLS and deployed to the AKS cluster  
+8. Now run `python deploy_model.py` and the model will be registered with AMLS and deployed to the AKS cluster  
     
 ## Step 7: Setting Up the API Infrastructure  
 

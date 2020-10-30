@@ -143,7 +143,7 @@ def init():
 
 
     spark = pyspark.sql.SparkSession.builder.appName("Retail AI Item Based Recommender").getOrCreate()
-    file_system_client = connect_to_adls(DATA_LAKE_NAME, DATA_LAKE_PRIMARY_KEY, DATA_LAKE_PRIMARY_KEY)
+    file_system_client = connect_to_adls(DATA_LAKE_NAME, DATA_LAKE_PRIMARY_KEY, DATA_LAKE_FILE_SYSTEM_NAME)
     dirs_to_write = ["itemFactors", "metadata", "userFactors"]
     prep_dirs_for_write(dirs_to_write, "retailai_recommendation_model")
     for directory in dirs_to_write:
