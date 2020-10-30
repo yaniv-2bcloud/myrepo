@@ -1,4 +1,4 @@
-# Synapse & AI Retail Recommender Solution Accelerator
+![Synapse and AI Retail Recommender](./Resource_Deployment/imgs/BannerRetailSynapse.png)
 
 
 ## About this repository
@@ -35,7 +35,7 @@ The architecture diagram below details what you will be building for this Soluti
 ### [0 - Resource Deployment](./Resource_Deployment)
 The resources in this folder can be used to deploy the required resources into your Azure Subscription. You can do this in the Azure Portal
 
-### [1- Anaytics Deployment](./Application_Deployment)
+### [1- Anaytics Deployment](./Analytics_Deployment)
 This folder contains the Notebooks needed to complete this solution accelerator. Once you have deployed all the required resources from ResourceDeploymnet.md, run through the Notebooks following the instructions in [Resource Deployment](./Resource_Deployment). 
 
 ### [2- Application Front Web Application Deployment](./Application_Frontend_Deployment)

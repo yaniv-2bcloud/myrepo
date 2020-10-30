@@ -5,7 +5,7 @@ import os, uuid, sys, pickle, shutil, io, logging
 from azure.storage.filedatalake import DataLakeServiceClient
 from azure.core._match_conditions import MatchConditions
 from azure.storage.filedatalake._models import ContentSettings
-from model_deployment.utility_functions.az_storage_reader import *
+from utility_functions.az_storage_reader import *
 
 # Enter the name of the Azure Data Lake Storage Gen2 Account
 DATA_LAKE_NAME=""
