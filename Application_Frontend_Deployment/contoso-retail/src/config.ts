@@ -24,7 +24,7 @@ export const GET_USER_PROFILES = "https://retail-ai-api.azure-api.net/v3/get_use
  * @param {string} product_id - ID of product for the API to reference. (required)
  */
 export function getItemRecommendations(product_id: number) {
-   return "https://retail-ai-api.azure-api.net/v3/get_item_recommendations2/" + product_id + "?subscription-key=c0e5fc9fa90746e1a73a05babc0a82a6";
+   return "https://retail-ai-api.azure-api.net/v3/get_item_recommendations2/" + product_id + "?subscription-key=" + SUBSCRIPTION_KEY;
 }
 
 /**
