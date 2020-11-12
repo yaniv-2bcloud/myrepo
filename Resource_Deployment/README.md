@@ -127,7 +127,6 @@ az ml workspace share -w <workspace-name> -g <resource-group> --user <object-id>
 ```
 
 3. Configure / Fill out the Parameters and then Run the following notebooks and scripts in order:  
-    1. `01_CreateOrUpdateProductDetails`  
     2. `02_Clean_Training_Data`  
     3. `03_ALS_Model_Training`  
     4. `04_RecommendationRefresh`  
