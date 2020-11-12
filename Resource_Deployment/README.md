@@ -127,9 +127,10 @@ az ml workspace share -w <workspace-name> -g <resource-group> --user <object-id>
 ```
 
 3. Configure / Fill out the Parameters and then Run the following notebooks and scripts in order:  
-    2. `02_Clean_Training_Data`  
-    3. `03_ALS_Model_Training`  
-    4. `04_RecommendationRefresh`  
+    - [`02_Clean_Training_Data.ipynb`](../Analytics_Deployment/synapse-studio/notebooks/02_Clean_Training_Data.ipynb)  
+    - [`03_ALS_Model_Training.ipynb`](../Analytics_Deployment/synapse-studio/notebooks/03_ALS_Model_Training.ipynb)  
+    - [`04_RecommendationRefresh.ipynb`](../Analytics_Deployment/synapse-studio/notebooks/04_RecommendationRefresh.ipynb)
+    
 4. After all of these have been run successfully, the recommendations will have been generated for the User-Based Recommendations, and the model will be ready for deployment for the Item-Based Recommender served on Azure Kubernetes Service.  
   
 ## Step 6: Set Up the Item-Based Recommendation Web Service  
