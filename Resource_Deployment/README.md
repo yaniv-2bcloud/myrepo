@@ -93,7 +93,7 @@ We use the `product_details.json` to enhance the products served to the front-en
             - You can find the name of the associated Container Registry in the resource page of the deployed Azure Machine Learning Service  
 
 2. Now you will need to create a Service Principal and give Contributor access to the Azure Machine Learning Service. Run the following commands in the Powershell: 
-- **Note**:Save the client-id and password of this Service Principal for future steps in the [Notebook](./Analytics_Deployment/synapse-studio/notebooks/03_ALS_Model_Training.ipynb). This will install the Azure Machine Learning CLI Extention. 
+- **Note**:Save the client-id and password of this Service Principal for future steps in the [Notebook](../Analytics_Deployment/synapse-studio/notebooks/03_ALS_Model_Training.ipynb). This will install the Azure Machine Learning CLI Extention. 
 
 
 ```sh 
