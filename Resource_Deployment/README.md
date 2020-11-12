@@ -48,7 +48,7 @@ We use the `product_details.json` to enhance the products served to the front-en
 1. Upload this JSON to the Azure Data Lake Storage Account attached to your Synapse Studio  
     - Make sure you put it into the filesystem that is the Primary Filesystem for the Synapse Studio  
     - Put it in the folder `synapse/workspaces` in the filesystem that is the primary filesystem for the Synapse Studio
-2. Import `Analytics Deployment\synapse-studio\notebooks\CreateOrUpdateProductDetails.ipynb` to the Synapse Studio and fill out the parameters for the filesystem name and the account name  
+2. Import [`Analytics Deployment\synapse-studio\notebooks\01_CreateOrUpdateProductDetails.ipynb`](../Analytics_Deployment/synapse-studio/notebooks/01_CreateOrUpdateProductDetails.ipynb) to the Synapse Studio and fill out the parameters for the filesystem name and the account name  
 3. Execute the Notebook  
 
 ## Step 3: Upload Assets and Data to the Synapse Workspace  
