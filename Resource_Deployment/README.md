@@ -48,7 +48,7 @@ We use the `product_details.json` to enhance the products served to the front-en
 1. Upload this JSON to the Azure Data Lake Storage Account attached to your Synapse Studio  
     - Make sure you put it into the filesystem that is the Primary Filesystem for the Synapse Studio  
     - Put it in the folder `synapse/workspaces` in the filesystem that is the primary filesystem for the Synapse Studio
-2. Import `Analytics Deployment\synapse-studio\notebooks\CreateOrUpdateProductDetails.ipynb` to the Synapse Studio and fill out the parameters for the filesystem name and the account name  
+2. Import [`Analytics Deployment\synapse-studio\notebooks\01_CreateOrUpdateProductDetails.ipynb`](../Analytics_Deployment/synapse-studio/notebooks/01_CreateOrUpdateProductDetails.ipynb) to the Synapse Studio and fill out the parameters for the filesystem name and the account name  
 3. Execute the Notebook  
 
 ## Step 3: Upload Assets and Data to the Synapse Workspace  
@@ -127,10 +127,10 @@ az ml workspace share -w <workspace-name> -g <resource-group> --user <object-id>
 ```
 
 3. Configure / Fill out the Parameters and then Run the following notebooks and scripts in order:  
-    1. `01_CreateOrUpdateProductDetails`  
-    2. `02_Clean_Training_Data`  
-    3. `03_ALS_Model_Training`  
-    4. `04_RecommendationRefresh`  
+    - [`02_Clean_Training_Data.ipynb`](../Analytics_Deployment/synapse-studio/notebooks/02_Clean_Training_Data.ipynb)  
+    - [`03_ALS_Model_Training.ipynb`](../Analytics_Deployment/synapse-studio/notebooks/03_ALS_Model_Training.ipynb)  
+    - [`04_RecommendationRefresh.ipynb`](../Analytics_Deployment/synapse-studio/notebooks/04_RecommendationRefresh.ipynb)
+    
 4. After all of these have been run successfully, the recommendations will have been generated for the User-Based Recommendations, and the model will be ready for deployment for the Item-Based Recommender served on Azure Kubernetes Service.  
   
 ## Step 6: Set Up the Item-Based Recommendation Web Service  
