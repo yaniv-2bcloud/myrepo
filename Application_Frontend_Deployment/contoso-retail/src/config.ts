@@ -55,3 +55,9 @@ export const GET_PRODUCTS_BY_CATEGORY = "https://retail-ai-api.azure-api.net/v3/
 export function getPurchaseHistory(user_id: string) {
     return "https://retail-ai-api.azure-api.net/v3/get_purchase_history2/" + user_id + "?subscription-key=" + SUBSCRIPTION_KEY;
 }
+
+/** Config Key name for EventSender.tsx */
+export const EVENT_HUB_KEYNAME = "[ENTER KEY NAME]";
+
+/** Config Access key for EventSender.tsx */
+export const EVENT_HUB_ACCESS_KEY = "[ENTER ACCESS KEY]";
