@@ -24,7 +24,15 @@ param(
 
     [Parameter(Mandatory = $True)]
     [string]
-    $existingcosmosDBName = ''
+    $existingcosmosDBName = '',
+
+    [Parameter(Mandatory = $True)]
+    [string]
+    $recommendMLServiceURL = '',
+
+    [Parameter(Mandatory = $True)]
+    [string]
+    $recommendMLServiceBearerToken = ''
 )
 
 #CreateRandom 3 digit not to duplicate DNS Name
@@ -161,6 +169,12 @@ $connectionURL = $connectionString.split(";")[0].Replace("AccountEndpoint=", "")
 $accessKey = $connectionString.split(";")[1].Replace("AccountKey=", "")
 ((Get-Content -path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.PurchaseHistory.Host\appsettings.json -Raw) -replace '{accessKey}', $accessKey) | Set-Content -Path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.PurchaseHistory.Host\appsettings.json
 ((Get-Content -path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.RecommendationByUser.Host\appsettings.json -Raw) -replace '{accessKey}', $accessKey) | Set-Content -Path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.RecommendationByUser.Host\appsettings.json
+
+((Get-Content -path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.RecommendationByItem.Host\appsettings.json.temp -Raw) -replace '{RecommendMLServiceURL}', $recommendMLServiceURL) | Set-Content -Path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.RecommendationByItem.Host\appsettings.json
+((Get-Content -path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.RecommendationByItem.Host\appsettings.json -Raw) -replace '{RecommendMLServiceBearerToken}', $recommendMLServiceBearerToken) | Set-Content -Path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.RecommendationByItem.Host\appsettings.json
+
+
+
 
 Write-Host "Step 3 - CosmosDB settings for Application finished.`r`n"
 
