@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Contoso.DataAccess.CosmosDB.Mongo\Contoso.DataAccess.CosmosDB.Mongo.csproj" />
+    <ProjectReference Include="..\Contoso.DataAccess.CosmosDB.Sql\Contoso.DataAccess.CosmosDB.Sql.csproj" />
   </ItemGroup>
 
 </Project>

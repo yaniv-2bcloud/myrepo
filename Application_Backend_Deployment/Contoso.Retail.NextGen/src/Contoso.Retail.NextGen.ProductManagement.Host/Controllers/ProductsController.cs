@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,27 +19,27 @@ namespace Contoso.Retail.NextGen.ProductManagement.Host.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Models.Product> Get()
+        public IEnumerable<Product> Get()
         {
             return productManager.GetAllProducts();
         }
 
         [HttpGet("{ProductId}")]
-        public Models.Product Get(string ProductId)
+        public async Task<Product> Get(string ProductId)
         {
-            return productManager.GetProduct(ProductId);
+            return await productManager.GetProduct(ProductId);
         }
 
         [HttpGet]
         [Route("GetProductsByCategory")]
-        public IEnumerable<Models.Product> GetProductsByCategory([FromQuery] string CategoryName)
+        public async Task<IEnumerable<Product>> GetProductsByCategory([FromQuery] string CategoryName)
         {
-            return productManager.GetProductsByCategory(CategoryName);
+            return await productManager.GetProductsByCategory(CategoryName);
         }
 
         [HttpPost]
         [Route("GetProducts")]
-        public IEnumerable<Models.Product> GetProducts(string[] ProductIDS)
+        public IAsyncEnumerable<Product> GetProducts(string[] ProductIDS)
         {
             return productManager.GetProducts(ProductIDS);
         }
@@ -61,9 +58,9 @@ namespace Contoso.Retail.NextGen.ProductManagement.Host.Controllers
         }
 
         [HttpDelete("{ProductId}")]
-        public bool Delete(Guid ProductId)
+        public async Task<bool> Delete(Guid ProductId)
         {
-            return productManager.Remove(ProductId);
+            return await productManager.Remove(ProductId);
         }
     }
 }

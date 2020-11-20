@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,9 +53,10 @@ namespace Contoso.Retail.NextGen.ProductManagement.Host
 
 
 
-            services.AddTransient<IProductManager, ProductManager>(c =>
+            services.AddTransient<IProductManager, ProductManagementService>(c =>
             {
-                return new ProductManager(Configuration["Values:DBConnectionString"], "Products");
+                return new ProductManagementService(Configuration["Values:DBConnectionString"],
+                    Configuration["Values:DatabaseName"]);
             }
             );
         }
@@ -73,7 +71,7 @@ namespace Contoso.Retail.NextGen.ProductManagement.Host
 
             app.UseCors(myPolicy);
 
-            app.UseMiddleware(typeof(Contoso.HttpHost.Moddleware.Exception.ExceptionHandler));
+            app.UseMiddleware(typeof(Contoso.HttpHost.Middleware.Exception.ExceptionHandler));
 
             //app.UseHttpsRedirection();
 
@@ -85,17 +83,9 @@ namespace Contoso.Retail.NextGen.ProductManagement.Host
 
             app.UseSwaggerUI(c =>
             {
-                if (env.IsDevelopment())
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Contoso Retail's Product Management Service API V1");
-                }
-                else
-                {
-                    //for frontdoor service
-                    c.SwaggerEndpoint("./v1/swagger.json", "Contoso Retail's Product Management Service API V1");
-                    // c.RoutePrefix = "product";
-                }
 
+                c.SwaggerEndpoint("./v1/swagger.json", "Contoso Retail's Product Management Service API V1");
+                //c.RoutePrefix = "product";
 
             });
 

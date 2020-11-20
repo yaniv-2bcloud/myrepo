@@ -1,30 +1,38 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using Contoso.DataAccess.CosmosDB.Mongo.ModelBase;
-using Contoso.DigitalGoods.OffChain;
+﻿using Contoso.DataAccess.CosmosDB.Sql;
+using Contoso.DataAccess.CosmosDB.Sql.ModelBase;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Contoso.Retail.NextGen.UserProfile
 {
-    public class UserProfileManager : MongoEntntyCollectionBase<Models.UserProfile, Guid>, IUserProfileManager
+    public class UserProfileManager : CosmosSqlEntityCollectionBase<Models.UserProfile, Guid>, IUserProfileManager
     {
         public UserProfileManager(string DataConnectionString, string CollectionName) : base(DataConnectionString, CollectionName)
         {
+
         }
 
-        public async Task<Models.UserProfile> Register(Models.UserProfile User)
+        protected override void ModelCreating(ModelBuilder modelBuilder)
         {
-            return await ObjectCollection.SaveAsync(new Models.UserProfile()
-            { UserID = User.UserID, Name = User.Name, ProfileImageURL = User.ProfileImageURL }
-            );
+            modelBuilder.Entity<Models.UserProfile>(e => {
+                e.HasPartitionKey(e => e.UserID);
+            });
+
+            base.ModelCreating(modelBuilder);
         }
 
-        public Models.UserProfile GetUser(string UserID)
+        public async Task<Models.UserProfile> RegisterAsync(Models.UserProfile User)
         {
-            return ObjectCollection.Find(new GenericSpecification<Models.UserProfile>(x => x.UserID == UserID));
+            var affectedRows = await ObjectCollection.AddAsync(User);
+
+            return User;
+        }
+
+        public async Task<Models.UserProfile> GetUserAsync(string UserID)
+        {
+            return await ObjectCollection.FindAsync(new GenericSpecification<Models.UserProfile>(x => x.UserID == UserID));
         }
 
         public IEnumerable<Models.UserProfile> GetAllUsers()
@@ -33,22 +41,23 @@ namespace Contoso.Retail.NextGen.UserProfile
             return ObjectCollection.GetAll();
         }
 
-        public async Task<bool> Update(Models.UserProfile User)
+        public async Task<bool> UpdateAsync(Models.UserProfile User)
         {
             await ObjectCollection.SaveAsync(User);
             return true;
         }
 
-        public bool Remove(Models.UserProfile User)
+        public async Task<bool> RemoveAsync(Models.UserProfile User)
         {
-            ObjectCollection.Delete(User);
-            return true;
+            var result = await ObjectCollection.DeleteAsync(User);
+            return (result > 0);
         }
 
-        public bool Remove(Guid UserID)
+        public async Task<bool> RemoveAsync(Guid UserID)
         {
-            ObjectCollection.Delete(UserID);
-            return true;
+            var result = await ObjectCollection.DeleteAsync(UserID);
+            return (result > 0);
         }
+            
     }
 }

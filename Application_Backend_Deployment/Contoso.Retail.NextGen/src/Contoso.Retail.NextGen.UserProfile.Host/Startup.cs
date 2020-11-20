@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +55,7 @@ namespace Contoso.Retail.NextGen.UserProfile.Host
 
             services.AddTransient<IUserProfileManager, UserProfileManager>(c =>
                     {
-                        return new UserProfileManager(Configuration["Values:DBConnectionString"], "Users");
+                        return new UserProfileManager(Configuration["Values:DBConnectionString"], Configuration["Values:DatabaseName"]);
                     }
             );
 
@@ -75,7 +72,7 @@ namespace Contoso.Retail.NextGen.UserProfile.Host
 
             app.UseCors(myPolicy);
 
-            app.UseMiddleware(typeof(Contoso.HttpHost.Moddleware.Exception.ExceptionHandler));
+            app.UseMiddleware(typeof(Contoso.HttpHost.Middleware.Exception.ExceptionHandler));
 
             //app.UseHttpsRedirection();
 
@@ -87,18 +84,7 @@ namespace Contoso.Retail.NextGen.UserProfile.Host
 
             app.UseSwaggerUI(c =>
             {
-
-                if (env.IsDevelopment())
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Contoso Retail's User Profile Service API V1");
-                }
-                else
-                {
-                    //for fontdoor service
-                    c.SwaggerEndpoint("./v1/swagger.json", "Contoso Retail's User Profile Service API V1");
-                    // c.RoutePrefix = "profile";
-                }
-
+                c.SwaggerEndpoint("./v1/swagger.json", "Contoso Retail's User Profile Service API V1");
             });
 
 

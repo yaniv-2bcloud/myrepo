@@ -1,13 +1,11 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Contoso.Retail.NextGen.ProductManagement;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Contoso.Test.MSTestV2;
+using System.Threading.Tasks;
 
 namespace Contoso.Retail.NextGen.ProductManagement.Tests
 {
@@ -15,43 +13,41 @@ namespace Contoso.Retail.NextGen.ProductManagement.Tests
     public class ProductManagerTests : TestBase
     {
 
-        static ProductManager _productManager;
+        private ProductManagementService _productManager;
         static Models.Product newProduct;
 
         [TestInitialize()]
         public void ProductManagerTest()
         {
-            if (_productManager == null)
-            {
-                _productManager = new ProductManager(Config["Values:DBConnectionString"], "Products");
-            }
+
+            _productManager = new ProductManagementService(Config["Values:DBConnectionString"], "Application");
+
         }
 
         [TestMethod()]
-        public void Test01_RegisterTest()
+        public async Task Test01_RegisterTest()
         {
-            var result = _productManager.Register(
-                new Models.Product()
-                {
-                    Name = "foo",
-                    ProductID = "1010101",
-                    Brand = "Microsoft",
-                    Price = 10.02,
-                    Description = "bla bla bla",
-                    ImageURL = "http://images.com/foo.jpg"
-                }
-                ).GetAwaiter().GetResult();
+            newProduct = new Models.Product()
+            {
+                Name = "foo",
+                ProductID = (new Random(-1)).Next(100000,999999).ToString(),
+                Brand = "Microsoft",
+                Price = 10.02,
+                Description = "bla bla bla",
+                ImageURL = "http://images.com/foo.jpg"
+            };
 
+             var result = await _productManager.Register(newProduct);
             newProduct = result;
 
             Assert.IsNotNull(newProduct);
         }
 
         [TestMethod()]
-        public void Test02_GetProductTest()
+        public async Task Test02_GetProductTest()
         {
-            var result = _productManager.GetProduct(newProduct.ProductID);
-            Assert.IsTrue(result.Id == newProduct.Id);
+            var result = await _productManager.GetProduct(newProduct.ProductID);
+            Assert.IsTrue(result.ProductID == newProduct.ProductID);
         }
 
         [TestMethod()]
@@ -62,23 +58,22 @@ namespace Contoso.Retail.NextGen.ProductManagement.Tests
         }
 
         [TestMethod()]
-        public void Test04_UpdateTest()
+        public async Task Test04_UpdateTest()
         {
             newProduct.Name = "Updated Name";
-            _productManager.Update(newProduct).GetAwaiter().GetResult();
-
-            var product = _productManager.GetProduct(newProduct.ProductID);
+            await _productManager.Update(newProduct);
+            var product = await _productManager.GetProduct(newProduct.ProductID);
 
             Assert.IsTrue(product.Name == "Updated Name");
         }
 
-        [TestMethod()]
-        public void Test05_RemoveTest()
-        {
-            var result = _productManager.Remove(newProduct.Id);
+        //[TestMethod()]
+        //public async Task Test05_RemoveTest()
+        //{
+        //    var result = await _productManager.Remove(newProduct.Id);
 
-            Assert.IsTrue(result);
-        }
+        //    Assert.IsTrue(result);
+        //}
 
     }
 }

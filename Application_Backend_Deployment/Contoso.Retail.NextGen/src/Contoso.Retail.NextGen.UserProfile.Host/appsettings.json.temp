@@ -9,6 +9,7 @@
   },
   "AllowedHosts": "*",
   "Values": {
-    "DBConnectionString": "{connectionstring}"
+    "DBConnectionString": "{connectionstring}",
+    "DatabaseName" : "ContosoRetail"
   }
 }

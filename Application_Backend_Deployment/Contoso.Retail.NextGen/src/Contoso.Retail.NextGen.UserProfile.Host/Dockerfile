@@ -8,9 +8,9 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["Contoso.Retail.NextGen.UserProfile.Host/Contoso.Retail.NextGen.UserProfile.Host.csproj", "Contoso.Retail.NextGen.UserProfile.Host/"]
-COPY ["Contoso.HttpHost.Moddleware.Exception/Contoso.HttpHost.Moddleware.Exception.csproj", "Contoso.HttpHost.Moddleware.Exception/"]
+COPY ["Contoso.HttpHost.Middleware.Exception/Contoso.HttpHost.Middleware.Exception.csproj", "Contoso.HttpHost.Middleware.Exception/"]
 COPY ["Contoso.Retail.NextGen.UserProfile/Contoso.Retail.NextGen.UserProfile.csproj", "Contoso.Retail.NextGen.UserProfile/"]
-COPY ["Contoso.DataAccess.CosmosDB.Mongo/Contoso.DataAccess.CosmosDB.Mongo.csproj", "Contoso.DataAccess.CosmosDB.Mongo/"]
+COPY ["Contoso.DataAccess.CosmosDB.Sql/Contoso.DataAccess.CosmosDB.Sql.csproj", "Contoso.DataAccess.CosmosDB.Sql/"]
 RUN dotnet restore "Contoso.Retail.NextGen.UserProfile.Host/Contoso.Retail.NextGen.UserProfile.Host.csproj"
 COPY . .
 WORKDIR "/src/Contoso.Retail.NextGen.UserProfile.Host"

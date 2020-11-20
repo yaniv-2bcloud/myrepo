@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>45847586-45b1-4f4d-a1cf-b702697a1625</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Contoso.HttpHost.Moddleware.Exception\Contoso.HttpHost.Moddleware.Exception.csproj" />
+    <ProjectReference Include="..\Contoso.HttpHost.Middleware.Exception\Contoso.HttpHost.Middleware.Exception.csproj" />
     <ProjectReference Include="..\Contoso.Retail.NextGen.UserProfile\Contoso.Retail.NextGen.UserProfile.csproj" />
   </ItemGroup>
 

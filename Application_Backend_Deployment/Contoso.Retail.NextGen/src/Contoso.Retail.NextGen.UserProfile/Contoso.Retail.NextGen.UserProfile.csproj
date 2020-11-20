@@ -5,7 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Contoso.DataAccess.CosmosDB.Mongo\Contoso.DataAccess.CosmosDB.Mongo.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="5.0.0-rc.2.20475.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Contoso.DataAccess.CosmosDB.Sql\Contoso.DataAccess.CosmosDB.Sql.csproj" />
   </ItemGroup>
 
 </Project>
