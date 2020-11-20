@@ -1,5 +1,11 @@
+@REM Copyright (c) Microsoft Corporation.
+@REM Licensed under the MIT license.
+
 Powershell.exe -executionpolicy remotesigned -File ^
-Deploy1.ps1 ^
+    Deploy1.ps1 ^
     --location "westus2" ^
     --subscriptionID "{put your subscriptionID for deployment}" ^
-    --CertificateEamil "{put you real email address}"
+    --CertificateEamil "{put you real email address}" ^
+    --existingresourceGroupName "{put your resource group name}" ^
+    --existingstorageAccountName "{put your storage account name}" ^
+    --existingcosmosDBName "{put your CosmosDB Name}"

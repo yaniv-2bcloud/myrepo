@@ -27,3 +27,15 @@ spec:
           serviceName: contosoretailproductmanager
           servicePort: 80
         path: /product(/|$)(.*)
+      - backend:
+          serviceName: contosoretailpurchasehistory
+          servicePort: 80
+        path: /purchasehistory(/|$)(.*)
+      - backend:
+          serviceName: contosoretailrecommendationbyuser
+          servicePort: 80
+        path: /recommendationbyuser(/|$)(.*)
+      - backend:
+          serviceName: contosoretailrecommendationbyitem
+          servicePort: 80
+        path: /recommendationbyitem(/|$)(.*)

@@ -1,10 +1,13 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 $storageAccountName = "{storageaccount}"
 $cosmosDBName = "{cosmosdbname}"
 $resourceGroupName = "{resourcegroup}"
 $serviceEndpoint = "{serviceendpoint}"
 
-$connectionString = az cosmosdb keys list --type connection-strings --name $cosmosDBName --resource-group $resourceGroupName --query "connectionStrings[?contains(description, 'Primary MongoDB Connection String')].[connectionString]" -o tsv
-Write-Host "Cosmos DB connectionString  : $connectionString"
+#$connectionString = az cosmosdb keys list --type connection-strings --name $cosmosDBName --resource-group $resourceGroupName --query "connectionStrings[?contains(description, 'Primary MongoDB Connection String')].[connectionString]" -o tsv
+#Write-Host "Cosmos DB connectionString  : $connectionString"
 
 $storageAccountKey = az storage account keys list -g $resourceGroupName -n $storageAccountName --query "[?keyName == 'key1'].value" -o tsv
 Write-Host "Storage Account key : $storageAccountKey"
@@ -21,9 +24,13 @@ az storage container create --name "profile" `
 
 
 #Upload profile images
+Write-Host "Uploading Profile Images"
+
 az storage blob upload-batch -d profile --account-key $storageAccountKey --account-name $storageAccountName -s .\Data\Images\profile
 
 #Upload product images
+Write-Host "Uploading Product Images"
+
 az storage blob upload-batch -d product --account-key $storageAccountKey --account-name $storageAccountName -s .\Data\Images\product
 
 #Get Service Endpoint

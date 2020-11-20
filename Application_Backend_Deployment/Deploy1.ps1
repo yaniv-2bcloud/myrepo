@@ -12,15 +12,28 @@ param(
 
     [Parameter(Mandatory = $True)]
     [string]
-    $CertificateEamil = ''
+    $CertificateEamil = '',
+
+    [Parameter(Mandatory = $True)]
+    [string]
+    $existingresourceGroupName = '',
+
+    [Parameter(Mandatory = $True)]
+    [string]
+    $existingstorageAccountName = '',
+
+    [Parameter(Mandatory = $True)]
+    [string]
+    $existingcosmosDBName = ''
 )
 
 #CreateRandom 3 digit not to duplicate DNS Name
 $surfix = (Get-Random -Maximum 999).toString().PadLeft(3, "0")
 
-$resourceGroupName = "contosoretailapi$surfix"
-$azurecosmoaccount = "contosoretailcosmos$surfix"
-$storageAccountName = "contosoretailblob$surfix"
+$resourceGroupName = $existingresourceGroupName
+$azurecosmoaccount = $existingcosmosDBName
+$storageAccountName = $existingstorageAccountName
+
 $containerregistry = "contosoretailacr$surfix"
 $kubernateservice = "contosoretailk8s$surfix"
 
@@ -42,14 +55,14 @@ Write-Host "Switched subscription to '$subscriptionID'"
 
 
 $resourceGroup = az group exists -n $resourceGroupName
-if ($resourceGroup -eq $True) {
-    throw "The Resource group '$resourceGroupName' is already exist`r`n Please remove it and try it again"
+if ($resourceGroup -eq $false) {
+    throw "The Resource group '$resourceGroupName' is not exist`r`n Please check resource name and try it again"
 }
 
-az group create `
-    --location $location `
-    --name $resourceGroupName `
-    --subscription $subscriptionID
+# az group create `
+#     --location $location `
+#     --name $resourceGroupName `
+#     --subscription $subscriptionID
 
 
 Write-Host "Step 1 - Creating Azure Container Registry ..."
@@ -100,7 +113,7 @@ Write-Host "Step 2.2 - Creating Kubernetes Service Cluster ..."
 az aks create --name $kubernateservice `
     --resource-group $resourceGroupName `
     --location $location  `
-    --kubernetes-version 1.17.5 `
+    --kubernetes-version 1.17.13 `
     --node-vm-size Standard_D2_v2 `
     --node-count 1 `
     --service-principal "$appid" `
@@ -123,54 +136,69 @@ Write-Host "Step 2 - Kubernetes Service Cluster done.`r`n"
 
 Write-Host "Step 3 - Create CosmosDB for Application."
 # Create a MongoDB API Cosmos DB account with consistent prefix (Local) consistency and multi-master enabled
-az cosmosdb create `
-    --resource-group $resourceGroupName `
-    --name $azurecosmoaccount `
-    --kind MongoDB `
-    `
-    --default-consistency-level "ConsistentPrefix" `
-    --enable-multiple-write-locations false `
-    --subscription $subscriptionID
+# az cosmosdb create `
+#     --resource-group $resourceGroupName `
+#     --name $azurecosmoaccount `
+#     --kind MongoDB `
+#     `
+#     --default-consistency-level "ConsistentPrefix" `
+#     --enable-multiple-write-locations false `
+#     --subscription $subscriptionID
 
 $connectionString = az cosmosdb keys list `
     --type connection-strings `
     --name $azurecosmoaccount `
     --resource-group $resourceGroupName `
-    --query "connectionStrings[?contains(description, 'Primary MongoDB Connection String')].[connectionString]" -o tsv
-
+    --query "connectionStrings[?contains(description, 'Primary SQL Connection String')].[connectionString]" -o tsv
 
 ((Get-Content -path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.ProductManagement.Host\appsettings.json.temp -Raw) -replace '{connectionstring}', $connectionString) | Set-Content -Path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.ProductManagement.Host\appsettings.json
 ((Get-Content -path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.UserProfile.Host\appsettings.json.temp -Raw) -replace '{connectionstring}', $connectionString) | Set-Content -Path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.UserProfile.Host\appsettings.json
 
-Write-Host "Step 3 - CosmosDB for Application created.`r`n"
+$connectionURL = $connectionString.split(";")[0].Replace("AccountEndpoint=", "")
+((Get-Content -path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.PurchaseHistory.Host\appsettings.json.temp -Raw) -replace '{connectionURL}', $connectionURL) | Set-Content -Path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.PurchaseHistory.Host\appsettings.json
+((Get-Content -path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.RecommendationByUser.Host\appsettings.json.temp -Raw) -replace '{connectionURL}', $connectionURL) | Set-Content -Path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.RecommendationByUser.Host\appsettings.json
 
+$accessKey = $connectionString.split(";")[1].Replace("AccountKey=", "")
+((Get-Content -path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.PurchaseHistory.Host\appsettings.json -Raw) -replace '{accessKey}', $accessKey) | Set-Content -Path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.PurchaseHistory.Host\appsettings.json
+((Get-Content -path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.RecommendationByUser.Host\appsettings.json -Raw) -replace '{accessKey}', $accessKey) | Set-Content -Path .\Contoso.Retail.NextGen\src\Contoso.Retail.NextGen.RecommendationByUser.Host\appsettings.json
 
-Write-Host "Step 4 - Create Storage Account for Application."
-# Create a Storage  account 
-az storage account create `
-    --location $location `
-    --name $storageAccountName `
-    --resource-group $resourceGroupName `
-    --sku "Standard_LRS" `
-    --subscription $subscriptionID
+Write-Host "Step 3 - CosmosDB settings for Application finished.`r`n"
 
-Write-Host "Step 4 - Storage Account for Application created.`r`n"    
+# Write-Host "Step 4 - Create Storage Account for Application."
+# # Create a Storage  account 
+# az storage account create `
+#     --location $location `
+#     --name $storageAccountName `
+#     --resource-group $resourceGroupName `
+#     --sku "Standard_LRS" `
+#     --subscription $subscriptionID
+
+# Write-Host "Step 4 - Storage Account for Application created.`r`n"    
 
 cd ".\Contoso.Retail.NextGen\src"
 
 docker build -f .\Contoso.Retail.NextGen.ProductManagement.Host\Dockerfile --rm -t 'microsoft/contosoretail/productapi' .
 docker build -f .\Contoso.Retail.NextGen.UserProfile.Host\Dockerfile --rm -t 'microsoft/contosoretail/userprofile' .
-
+docker build -f .\Contoso.Retail.NextGen.PurchaseHistory.Host\Dockerfile --rm -t 'microsoft/contosoretail/purchasehistory' .
+docker build -f .\Contoso.Retail.NextGen.RecommendationByUser.Host\Dockerfile --rm -t 'microsoft/contosoretail/recommendationbyuser' .
+docker build -f .\Contoso.Retail.NextGen.RecommendationByItem.Host\Dockerfile --rm -t 'microsoft/contosoretail/recommendationbyitem' .
 
 docker tag 'microsoft/contosoretail/productapi' "$registryName.azurecr.io/microsoft/contosoretail/productapi"
-docker tag 'microsoft/contosoretail/userprofile' "$registryName.azurecr.io/microsoft/contoretail/userprofile"
+docker tag 'microsoft/contosoretail/userprofile' "$registryName.azurecr.io/microsoft/contosoretail/userprofile"
+docker tag 'microsoft/contosoretail/purchasehistory' "$registryName.azurecr.io/microsoft/contosoretail/purchasehistory"
+docker tag 'microsoft/contosoretail/recommendationbyuser' "$registryName.azurecr.io/microsoft/contosoretail/recommendationbyuser"
+docker tag 'microsoft/contosoretail/recommendationbyitem' "$registryName.azurecr.io/microsoft/contosoretail/recommendationbyitem"
 
 Write-Host "Login to ACS `r`n"
 docker login "$registryName.azurecr.io" -u $userName -p $password
 
 Write-Host "Push Images to ACS`r`n"
 docker push "$registryName.azurecr.io/microsoft/contosoretail/productapi"
-docker push "$registryName.azurecr.io/microsoft/contoretail/userprofile"
+docker push "$registryName.azurecr.io/microsoft/contosoretail/userprofile"
+docker push "$registryName.azurecr.io/microsoft/contosoretail/purchasehistory"
+docker push "$registryName.azurecr.io/microsoft/contosoretail/recommendationbyuser"
+docker push "$registryName.azurecr.io/microsoft/contosoretail/recommendationbyitem"
+
 
 cd ..\..
 
@@ -210,16 +238,17 @@ helm install `
 
 
 #Install Nginx Ingress Controller
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.41.2/deploy/static/provider/cloud/deploy.yaml
 
-kubectl create namespace ingress-nginx
-kubectl label namespace ingress-nginx cert-manager.io/disable-validation=true
+# kubectl create namespace ingress-nginx
+# kubectl label namespace ingress-nginx cert-manager.io/disable-validation=true
 
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-helm install nginx stable/nginx-ingress `
-    --namespace ingress-nginx `
-    --set controller.replicaCount=2 `
-    --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux `
-    --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux 
+# helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+# helm install nginx stable/nginx-ingress `
+#     --namespace ingress-nginx `
+#     --set controller.replicaCount=2 `
+#     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux `
+#     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux 
     
 
 
