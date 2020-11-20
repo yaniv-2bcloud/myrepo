@@ -8,6 +8,9 @@
             --location "westus2" 
             --subscriptionID "{Your Azure SubscriptionID}" 
             --CertificateEamil "{Your Email Address}"
+            --existingresourceGroupName "{The Resourcegroup name where Analytics resources deployed}" 
+            --existingstorageAccountName "{The Storage account name which has been created in Analytics resource deployment step}" 
+            --existingcosmosDBName "{The CosmosDB name which has been created in Analytics resource deployment step}"
 
 2. Update Parameters by your preference and status. then save and open command console and execute [Deploy1.bat](Deploy1.bat) file.   ***Email Address should be valid one for your Certificate***
 

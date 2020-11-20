@@ -43,12 +43,20 @@ Congraturations! you have completed for API Service Deployment.
 You can check them from the URL what we created in Config DNS Name.
 
 In your browser you can check the service endpoints (URL will be diffrent)
+
 > <https://contoso00916066.westus2.cloudapp.azure.com/profile/swagger/index.html>
 > <https://contoso00916066.westus2.cloudapp.azure.com/product/swagger/index.html>  
-
+> <https://contoso00916066.westus2.cloudapp.azure.com/purchasehistory/swagger/index.html>
+> <https://contoso00916066.westus2.cloudapp.azure.com/recommendationbyitem/swagger/index.html>  
+> <https://contoso00916066.westus2.cloudapp.azure.com/recommendationbyUser/swagger/index.html>  
+> 
 **[Caution]** Though your swagger documents can be seen with these URL but your service endpoint shoud be different.
+
 > Profile Service Endpoint => https://contoso00916066.westus2.cloudapp.azure.com/profile/**ContosoRetail**/Users  
-> Product Service Endpoint => https://contoso00916066.westus2.cloudapp.azure.com/product/**ContosoRetail**/Products
+> Product Service Endpoint => https://contoso00916066.westus2.cloudapp.azure.com/product/**ContosoRetail**/Products  
+> PurchaseHistory Service Endpoint => https://contoso00916066.westus2.cloudapp.azure.com/purchasehistory**ContosoRetail**/PurchaseHistory    
+> Recommendation by Item Service Endpoint => https://contoso00916066.westus2.cloudapp.azure.com/recommendationbyitem/**ContosoRetail**/GetRecommendationItems  
+> Product Service Endpoint => https://contoso00916066.westus2.cloudapp.azure.com/recommendationbyUser/**ContosoRetail**/GetRecommendationUsers
 
 ***Copy your service Endpoint URLs and put this information in Web Application source code to invoke these services.***
 
