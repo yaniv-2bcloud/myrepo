@@ -3,16 +3,16 @@ Contoso Retail User Profile / Product Catalog APIs
 
 # Prerequisites
 1. [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) - For Azure Resources and Source code deployment
-2. [Kubectl](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) - For Deploying API Services and Configuration
+2. [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) - For Deploying API Services and Configuration
 3. [Docker Desktop](https://www.docker.com/get-started) - For Debugging in local or containerizing codes in Deployment process
 4. [PowerShell 7.x](https://github.com/PowerShell/PowerShell#get-powershell) - For executing Deployment Script
 5. [Helm 3.x](https://helm.sh/docs/intro/install/) - For installing cert-manager, ingress-nginx Ingress Controller
 
 # (Local) Build and Test
-1. Local build and test : Open solution file [/Contoso.Retail.NextGen/src/ContosoRetail.NextGen.API.sln](/Contoso.Retail.NextGen/src/Contoso.Retail.NextGen.API.sln) from your Visual Studio. (Recommend using Visual Studio 2019)
+1. Local build and test : Open solution file [/Contoso.Retail.NextGen/src/ContosoRetail.NextGen.API.sln](Contoso.Retail.NextGen/src/Contoso.Retail.NextGen.API.sln) from your Visual Studio. (Recommend using Visual Studio 2019)
 
-Through AzurePiple line, you may deploy on Kubernetes cluster.
-Check [deployment.yaml](/Contoso.Retail.NextGen/manifests/deployment.yaml), [service.yaml](Contoso.Retail.NextGen/manifests/service.yml) in [menifests](Contoso.Retail.NextGen/manifest) folder and [azure-pipelines.yml](Contoso.Retail.NextGen/azure-pipelines.yml)
+Through Azure Pipeline, you may deploy on Kubernetes cluster.
+Check [deployment.yaml](Contoso.Retail.NextGen/manifests/deployment.yaml), [service.yaml](Contoso.Retail.NextGen/manifests/service.yml) in [manifests](Contoso.Retail.NextGen/manifests) folder and [azure-pipelines.yml](Contoso.Retail.NextGen/azure-pipelines.yml)
 
 # Getting Started
 Most of Deployment will be automated with scripts but some manual configuration work is required
