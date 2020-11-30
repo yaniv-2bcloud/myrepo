@@ -127,7 +127,7 @@ class Home extends React.Component<IProps, IState> {
         </PivotItem>
         <PivotItem headerText="Tools / Hardware">
           <div className="title-area">
-            <h2>Outdoor Living</h2>
+            <h2>Tools / Hardware</h2>
           </div>
           <CategoryRecommendations UsesVerticalLayout={true} CategoryName={CategoriesOptions.Tools_Hardware} />
         </PivotItem>
